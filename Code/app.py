@@ -35,6 +35,8 @@ st.title("Online Shopper Revenue Predictor App")
 
 st.write("This App predicts whether a person browsing online on shopping pages will eventually purchase something at the end of the session")
 
+st.header("Modell-Informationen")
+
 
 # Introducing three colums for user inputs
 row1_col1, row1_col2, row1_col3 = st.columns([1,1,1])
@@ -114,10 +116,28 @@ if uploaded_data is not None:
                        data=new_customers.to_csv().encode("utf-8"),
                        file_name="scored_new_customers.csv")
     st.write(new_customers["predictions"])
+    
+    
 
+# Sidebar Navigation
 
+st.sidebar.markdown("# :earth_africa: App-Menü:<br/><br/><br/>", unsafe_allow_html=True)
 
+st.sidebar.markdown(
+    
+'## :arrow_up_small: &ensp;'
+'<b><a href="#online-shopper-revenue-predictor-app" style="color: red;text-decoration: none;">Start</a></b><br/><br/><br/>'
 
+':books: &ensp;'
+'<b><a href="#modell-informationen" style="color: black;text-decoration: none;">Modell-Informationen</a></b><br/><br/>'
+
+':trophy: &ensp;'
+'<b><a href="#guessing-game" style="color: black;text-decoration: none;">Guessing Game</a></b><br/><br/>'
+
+':cloud: &ensp;'
+'<b><a href="#predicting-if-customer-purchases-something-or-not" style="color: black;text-decoration: none;">Upload eigener Daten</a></b><br/><br/>'
+
+, unsafe_allow_html=True)
 
 
 
