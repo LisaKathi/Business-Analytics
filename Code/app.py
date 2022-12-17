@@ -102,6 +102,11 @@ row2_col1.pyplot(fig1)
 
 # create subsample for the guessing game
 test_frac = data.iloc[16:27,:].reset_index().drop(columns="index")
+test_frac["Persons"] = test_frac.index
+test_frac["Persons"].replace({0:"Justus-Aurelius",1:"Daniel",2:"Jule",
+                           3:"David",4:"Tgetg",5:"Lisa",6:"Leo",
+                           7:"Isabel",8:"Maximilian",9:"Lara",10:"Marie"},inplace=True)
+test_frac.set_index("Persons", drop=True, inplace=True)
 test_frac["Prediction"] = model.predict(test_frac.drop(columns="Revenue"))
 test_samples = test_frac[["PageValues","Month","VisitorType_Returning_Visitor"]]
 
@@ -131,17 +136,17 @@ with row3_col1.form(key="sample_form"):
         
         
         if ((sample_rev == 1) and (guess == "Revenue")) or((sample_rev == 0) and (guess == "No Revenue")):
-            st.write("Congratulations, your prediction was correct")
+            st.write("Congratulations, your prediction is **correct**")
         elif ~((sample_rev == 0) and (guess == "No Revenue")) or ~((sample_rev == 1) and (guess == "Revenue")):
-            st.write("Unfortunately your prediction was wrong")
+            st.write("Unfortunately your prediction is **wrong**")
         if sample_rev == 1:
             st.write("In this case the online shopper **does** generate a revenue")
         if sample_rev == 0:
             st.write("In this case the online shopper **does not** generate a revenue")
         if ((sample_pred == 0) and (guess == "No Revenue")) or ((sample_pred == 1) and (guess == "Revenue")):
-            st.write("Your Predictions is congruent with the prediction of the model")
+            st.write("Your Predictions is **congruent** with the prediction of the model")
         elif ~((sample_pred == 0) and (guess == "No Revenue")) or ~((sample_pred == 1) and (guess == "Revenue")):
-            st.write("Your prediction is different from the models' prediction")
+            st.write("Your prediction is **different** from the models' prediction")
         else: 
             st.write("Please check your input again")
 
