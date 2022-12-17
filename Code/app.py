@@ -98,6 +98,70 @@ row2_col1.pyplot(fig1)
 #row2_col2.subheader("Vergleich Variablen")
 #row2_col2.pyplot(ax2)
 
+############################# Guessing Game #################################
+
+# create subsample for the guessing game
+test_frac = data.iloc[16:27,:].reset_index().drop(columns="index")
+test_frac["Prediction"] = model.predict(test_frac.drop(columns="Revenue"))
+test_samples = test_frac[["PageValues","Month","VisitorType_Returning_Visitor"]]
+
+
+# create two columns for the guessing game
+row3_col1, row3_col2 = st.columns([1,1])
+
+### guessing game
+
+st.markdown("***")
+
+row3_col1.subheader("Guessing Game")
+row3_col1.write("Select a person and predict based on the given\
+                parameters in the table on the right, whether \
+                this online shopper will generate a revenue or not\
+                meaning if a purchase happens or not")
+with row3_col1.form(key="sample_form"):
+    sample = st.selectbox("Select a person:", 
+                          test_samples.index)
+    guess = st.radio("Make a prediction based on the values for that person as to whether that person will purchase something online (Revenue) or not (No Revenue)",
+                     ('Revenue', 'No Revenue'))
+    submit = st.form_submit_button("Submit")
+    if submit:
+        sample_rev = test_frac.loc[test_frac.index == sample, "Revenue"].item()
+        sample_pred = test_frac.loc[test_frac.index == sample, "Prediction"].item()
+        #st.write(test_samples.loc[test_samples.index == sample,])
+        
+        
+        if ((sample_rev == 1) and (guess == "Revenue")) or((sample_rev == 0) and (guess == "No Revenue")):
+            st.write("Congratulations, your prediction was correct")
+        elif ~((sample_rev == 0) and (guess == "No Revenue")) or ~((sample_rev == 1) and (guess == "Revenue")):
+            st.write("Unfortunately your prediction was wrong")
+        if sample_rev == 1:
+            st.write("In this case the online shopper **does** generate a revenue")
+        if sample_rev == 0:
+            st.write("In this case the online shopper **does not** generate a revenue")
+        if ((sample_pred == 0) and (guess == "No Revenue")) or ((sample_pred == 1) and (guess == "Revenue")):
+            st.write("Your Predictions is congruent with the prediction of the model")
+        elif ~((sample_pred == 0) and (guess == "No Revenue")) or ~((sample_pred == 1) and (guess == "Revenue")):
+            st.write("Your prediction is different from the models' prediction")
+        else: 
+            st.write("Please check your input again")
+
+### Display the table with the values for the guessing game        
+
+if row3_col2.checkbox("Press here to see the Values for each person"):
+
+    row3_col2.write("This table shows for each person three of the most relevant values\
+                    determining whether an online shopper will generate\
+                    a revenue")
+    table_samples = test_samples.copy()
+    table_samples.rename(columns={"PageValues": "Page Value in US-Dollar",
+                                  "VisitorType_Returning_Visitor": "Returning Visitor"}, inplace=True)
+    table_samples["Month"].replace({2:'Feburary',3:"March",5:"May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December"}, inplace=True)
+    table_samples["Returning Visitor"].replace({1:"Yes",0:"No"}, inplace=True)
+    table_samples.index = table_samples.index.rename("Person")
+    
+    row3_col2.write(table_samples.to_html(), unsafe_allow_html=True)
+
+############################# Data Upload and Prediction #################################
 
 # predict revenue for uploaded data
 st.header("Predicting if customer purchases something or not")
