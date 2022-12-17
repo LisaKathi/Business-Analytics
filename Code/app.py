@@ -179,7 +179,7 @@ if uploaded_data is not None:
     st.download_button(label="Download Scored Customer Data",
                        data=new_customers.to_csv().encode("utf-8"),
                        file_name="scored_new_customers.csv")
-    st.write(new_customers["predictions"])
+    
     
     
 
