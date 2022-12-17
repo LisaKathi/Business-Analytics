@@ -30,6 +30,11 @@ def load_model():
     return(loaded_model)
 model = load_model()
 
+#definition for adding more space between paragraphs
+def add_space(lines):
+    for i in range(lines):
+        st.write("\n")
+
 
 st.title("Online Shopper Revenue Predictor App")
 
@@ -37,6 +42,7 @@ st.write("This App predicts whether a person browsing online on shopping pages w
 
 st.header("Modell-Informationen")
 
+add_space(3)
 
 # Introducing three colums for user inputs
 row1_col1, row1_col2, row1_col3 = st.columns([1,1,1])
@@ -59,11 +65,13 @@ variable = row1_col3.selectbox("Select Variable to Compare", names)
 #                         (data["monthly_income"] <= income[1]), : ]
 
 
+add_space(3)
+
 # defining two columns for layouting plots 
 row2_col1, row2_col2  = st. columns([1,1])
 
 explode = (0.05, 0.05)
-fig1, ax = plt.subplots(figsize=[10,6])
+fig1, ax = plt.subplots(figsize=(10,6))
 
 plt.pie(x = data.groupby('Revenue').size(), autopct="%.2f%%", explode=explode, pctdistance=0.5, startangle=90, 
        labels = ['No revenue','Revenue'], textprops={'fontsize': 15}, colors = ['#4169E1', 'tomato'])
@@ -73,6 +81,7 @@ plt.pie(x = data.groupby('Revenue').size(), autopct="%.2f%%", explode=explode, p
 # Put matplotlib figure in col 1 
 row2_col1.subheader("Revenue")
 row2_col1.pyplot(fig1)
+
 
 
 # Zweiter Plot
@@ -97,6 +106,11 @@ row2_col1.pyplot(fig1)
 #ax2 = ax2.get_figure()
 #row2_col2.subheader("Vergleich Variablen")
 #row2_col2.pyplot(ax2)
+
+
+
+add_space(5)
+
 
 ############################# Guessing Game #################################
 
@@ -167,6 +181,7 @@ if row3_col2.checkbox("Press here to see the Values for each person"):
     row3_col2.write(table_samples.to_html(), unsafe_allow_html=True)
 
 ############################# Data Upload and Prediction #################################
+add_space(5)
 
 # predict revenue for uploaded data
 st.header("Predicting if customer purchases something or not")
