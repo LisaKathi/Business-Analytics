@@ -1,0 +1,4 @@
+seaborn
+matplotlib
+pandas==1.4.2
+sklearn
