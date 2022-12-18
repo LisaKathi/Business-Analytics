@@ -5,6 +5,7 @@
 ##### 
 
 import streamlit as st
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -47,67 +48,79 @@ add_space(3)
 # Introducing three colums for user inputs
 row1_col1, row1_col2, row1_col3 = st.columns([1,1,1])
 
-p_value = row1_col1.slider("The PageValue according to Google Analytics",
+p_value = row1_col1.slider("PageValue",
                   data["PageValues"].min(),
                   data["PageValues"].max(),
                   (0.0, data["PageValues"].max()))
 
-month = row1_col2.multiselect("Month of the Session", ("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"))
+
+monatsnamen = {"Februar": 2, "März": 3, "Mai": 5, "Juni": 6, "Juli": 7, "August": 8, "September": 9, "Oktober": 10, "November": 11, "Dezember": 12}
+
+month = row1_col2.multiselect("Monat der Session", monatsnamen.keys())
+
+if month:
+    Monat = [monatsnamen[n] for n in month]
+else:
+    Monat = [2, 3, 5, 6, 7, 8, 9, 10, 11, 12]
+
 
 
 names = data.columns
-variable = row1_col3.selectbox("Select Variable to Compare", names)
+variable = row1_col3.selectbox("Auswahl der Variable", names)
 
 # creating filtered data set according to slider inputs
-#filtered_data = data.loc[(data["borrower_rate"] >= rate[0]) & 
-#                         (data["borrower_rate"] <= rate[1]) &
-#                         (data["monthly_income"] >= income[0]) & 
-#                         (data["monthly_income"] <= income[1]), : ]
+filtered_data = data.loc[(data["PageValues"] >= p_value[0]) & 
+                         (data["PageValues"] <= p_value[1]) &
+                         (data["Month"].isin(Monat)), : ]
 
 
 add_space(3)
 
+
 # defining two columns for layouting plots 
+
 row2_col1, row2_col2  = st. columns([1,1])
 
-explode = (0.05, 0.05)
-fig1, ax = plt.subplots(figsize=(10,6))
-
-plt.pie(x = data.groupby('Revenue').size(), autopct="%.2f%%", explode=explode, pctdistance=0.5, startangle=90, 
-       labels = ['No revenue','Revenue'], textprops={'fontsize': 15}, colors = ['#4169E1', 'tomato'])
-
-#ax.set_title("Revenue Share", fontsize=20);
-
-# Put matplotlib figure in col 1 
 row2_col1.subheader("Revenue")
-row2_col1.pyplot(fig1)
+
+if filtered_data.empty:
+    
+    row2_col1.write("\n")
+    row2_col1.write("\n")
+    row2_col1.write("\n")
+    row2_col1.error("Keine Daten erfüllen die Vorgaben.")
+    
+else:
+            
+        
+    fig1, ax = plt.subplots(figsize=(10,6))
+
+    if filtered_data.groupby("Revenue").size().count() == 2:  
+
+        plt.pie(x = filtered_data.groupby("Revenue").size(), explode = (0.05, 0.05), autopct="%.2f%%", pctdistance=0.5, startangle=90, 
+                textprops={'fontsize': 15}, labels = ["Kein Kauf", "Kauf"], colors = ['#4169E1', 'tomato'])
+        
+# Put matplotlib figure in col 1
+        
+        row2_col1.pyplot(fig1)
+
+    else:
+        
+        row2_col1.write("\n")
+        row2_col1.write("\n")
+        row2_col1.write("\n")
+        row2_col1.info("100% der Daten führen zu Käufen.")
+          
+        
 
 
 
 # Zweiter Plot
 
-#sns.set(style = 'darkgrid')
-#sns.set(rc={'figure.figsize':(15, 7.5)})
 
-#RevenueData = data.loc[data['Revenue'] == 1]
-#NoRevenueData = data.loc[data['Revenue']!=1]
-
-#ax2 = sns.kdeplot(data=RevenueData['ExitRates'], fill=True, common_norm=False, 
-#   alpha=.33, linewidth=2, color = 'tomato')
-
-#ax2 = sns.kdeplot(data=NoRevenueData['ExitRates'], fill=True, common_norm=False, 
-#   alpha=.33, linewidth=2, color = '#4169E1')
-
-
-#ax2.legend(labels=['Revenue','No revenue'])
-#ax2.set_title('KDE Plot of YOUR VARIABLE', fontsize = 20)
-
-# Put seaborn figure in col 2 
-#ax2 = ax2.get_figure()
-#row2_col2.subheader("Vergleich Variablen")
-#row2_col2.pyplot(ax2)
-
-
+fig2 = sns.displot(x=data[variable], hue=data["Revenue"], kind="kde", palette="Set2", multiple="stack")
+row2_col2.subheader("Dichteverteilung der Variable")
+row2_col2.pyplot(fig2)
 
 add_space(5)
 
