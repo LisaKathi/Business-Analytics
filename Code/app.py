@@ -253,7 +253,11 @@ if st.checkbox("Klicke hier, wenn Du die vorhergesagten Daten sehen willst"):
                        data=new_customers.to_csv().encode("utf-8"),
                        file_name="scored_new_customers.csv")
     
+add_space(5)
     
+st.write("Die Daten sind von folgender Quelle: Sakar, C.O., Polat, S.O., Katircioglu, M. et al. Real-time prediction of online shoppers’ \
+         purchasing intention using multilayer perceptron and LSTM recurrent neural networks. \
+        Neural Comput & Applic 31, 6893–6908 (2019). https://doi.org/10.1007/s00521-018-3523-0")
     
 
 # Sidebar Navigation
