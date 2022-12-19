@@ -235,7 +235,7 @@ if row3_col2.checkbox("Klicke hier um die Werte für jede Person zu sehen"):
 add_space(5)
 
 # predict revenue for uploaded data
-st.header("Upload eigener Datein")
+st.header("Upload eigener Daten")
 
 uploaded_data = st.file_uploader("Wähle eine csv-Datei mit Kundendaten aus, um vorherzusagen, ob eine Transaktion stattfindet oder nicht")
 
@@ -278,7 +278,7 @@ st.sidebar.markdown(
 '<b><a href="#guessing-game" style="color: black;text-decoration: none;">Guessing Game</a></b><br/><br/>'
 
 ':cloud: &ensp;'
-'<b><a href="#upload-eigener-datein" style="color: black;text-decoration: none;">Upload eigener Daten</a></b><br/><br/>'
+'<b><a href="#upload-eigener-daten" style="color: black;text-decoration: none;">Upload eigener Daten</a></b><br/><br/>'
 
 , unsafe_allow_html=True)
 
