@@ -11,8 +11,10 @@ import seaborn as sns
 import pickle
 
 st.set_page_config(
-    page_title="Online Shopper Revenue App",
-    layout="wide")
+    page_title="Online Shopper App",
+    page_icon="🛍️",
+    layout="wide"
+)
 
 ############# Funtionen, Modelle und Daten laden ####################
 
@@ -45,20 +47,24 @@ def add_space(lines):
 
 st.title("Online Shopper Revenue Predictor App")
 
-st.header("Einführung: Die Revenue-Predictor App")
+st.header("Einführung: Das Revenue-Predictor Modell")
 
-st.write("Kaufen oder nicht kaufen? Diese Frage stellt sich nicht nur für Besucher von Online Shopping Portalen, sondern auch die Betreiber \
-         der Webseiten. Zum einem ist Kenntnis über Kunden ein großer Vorteil für effektives Marketing. Zum anderen hilft es realistische \
-        Budgets zu erstellen, wenn Einnahmen verlässlich vorhergesagt werden können. Wissen über Kaufentscheidungen ist daher eine wertvolle \
+st.write("Kaufen oder nicht kaufen? Diese Frage stellt sich nicht nur für Besucher von Online Shopping Portalen, sondern auch den Betreibern \
+         der Webseiten. Zum einem ist Kenntnis über Kunden ein großer Vorteil für effektives Marketing. Zum anderen hilft eine verlässliche \
+        Vorhersage von Einnahmen dabei, realistische Budgets zu erstellen. Wissen über Kaufentscheidungen ist daher eine wertvolle \
         Ressource für zahlreiche Unternehmen. Um diese Fragen zu beantworten sagt diese App für individuelle Kunden voraus, ob es am Ende eines\
         Website-Besuchs zu einer Transaktion kommt oder nicht.")
-st.write("Für die Vorhersage wird ein XGBoost-Model verwendet, welches schnell und zuverlässig eine Vorhersage trifft.\
-         Die ausschlagebensten Variablen sind PageValue, Month und ReturingVisitor.")
+st.write("Für die Vorhersage wird ein XGBoost-Model verwendet, welches dabei schnell und zuverlässig arbeitet.\
+         Die ausschlaggebensten Variablen sind **PageValue**, **Month** und **Visitor Type**.")
 
 if st.checkbox("Klicke hier, um die Erklärung der Variablen anzuzeigen"):
     st.write(variable_explanation)
+    
+st.markdown("***")
+    
+add_space(5)
 
-st.header("Modell-Informationen")
+st.header("Daten Explorer")
 
 add_space(3)
 
@@ -103,8 +109,10 @@ add_space(3)
 
 row2_col1, row2_col2, row2_col3  = st. columns([0.7,1,1])
 
+st.markdown("***")
+
 # Erster Plot 
-row2_col1.subheader("Revenue")
+row2_col1.subheader("Struktur der Zielvariable")
 
 if filtered_data.empty:
     
@@ -121,10 +129,13 @@ else:
     if filtered_data.groupby("Revenue").size().count() == 2:  
 
         plt.pie(x = filtered_data.groupby("Revenue").size(), explode = (0.05, 0.05), autopct="%.2f%%", pctdistance=0.5, startangle=90, 
-                textprops={'fontsize': 15}, labels = ["Kein Kauf", "Kauf"], colors = ['#4169E1', 'tomato'])
+                textprops={'fontsize': 15}, labels = ["No Revenue", "Revenue"], colors = ['#4169E1', 'tomato'])
         
 # Put matplotlib figure in col 1
         
+        row2_col1.write("\n")
+        row2_col1.write("\n")
+        row2_col1.write("\n")
         row2_col1.pyplot(fig1)
 
     else:
@@ -140,8 +151,8 @@ else:
 
 # Zweiter Plot
 
-fig2 = sns.displot(x=data[variable], hue=data["Revenue"], kind="kde", palette="Set2", multiple="stack")
-row2_col2.subheader("Dichteverteilung der Variable *{}*".format(variable))
+fig2 = sns.displot(x=data[variable], height= 3.5, hue=data["Revenue"], kind="kde", palette="Set2", multiple="stack")
+row2_col2.subheader("Dichteverteilung der ausgewählten Variable *{}*".format(variable))
 row2_col2.pyplot(fig2)
 
 
@@ -163,7 +174,7 @@ ax.legend().set_title("Variable")
 ax.set_facecolor("#f5f5fa")
 row2_col3.pyplot(fig3)
 
-add_space(5)
+add_space(7)
 
 ############################# Guessing Game #################################
 
@@ -185,14 +196,14 @@ row3_col1, row3_col2 = st.columns([1,1])
 
 st.markdown("***")
 
-row3_col1.subheader("Guessing Game")
-row3_col1.write("Wähle eine Person aus und entscheide, basierend auf den drei wichtigsten Werten \
-                in der Tabelle auf der rechten Seite, ob eine Transaktion stattfindet oder nicht")
+row3_col1.header("Guessing Game")
+row3_col1.write("Wähle eine Person aus und entscheide, basierend auf den Werten \
+                in der Tabelle, ob eine Transaktion stattfindet oder nicht.")
 with row3_col1.form(key="sample_form"):
     sample = st.selectbox("Wähle eine Person aus:", 
                           test_samples.index)
-    guess = st.radio("Entscheide, ob die ausgewöhlte Person nach dem besuch der Shopping-Website \
-                     eine Transaktion durchführt oder nicht",
+    guess = st.radio("Entscheide, ob die ausgewählte Person nach dem besuch der Shopping-Website \
+                     eine Transaktion durchführt oder nicht.",
                      ('Transaktion', 'Keine Transaktion'))
     submit = st.form_submit_button("Submit")
     if submit:
@@ -202,26 +213,27 @@ with row3_col1.form(key="sample_form"):
         
         
         if ((sample_rev == 1) and (guess == "Transaktion")) or((sample_rev == 0) and (guess == "Keine Transaktion")):
-            st.write("Gratulation, deine Vorhersage ist **korrekt**")
+            st.write("Gratulation, deine Vorhersage ist **korrekt**!")
         elif ~((sample_rev == 0) and (guess == "Keine Transaktion")) or ~((sample_rev == 1) and (guess == "Transaktion")):
-            st.write("Leider ist deine Vorhersage **falsch**")
+            st.write("Leider ist deine Vorhersage **falsch**.")
         if sample_rev == 1:
-            st.write("In diesem Fall findet **eine** Transaktion statt")
+            st.write("In diesem Fall findet **eine** Transaktion statt.")
         if sample_rev == 0:
-            st.write("In diesem Fall findet **keine** Transaktion statt")
+            st.write("In diesem Fall findet **keine** Transaktion statt.")
         if ((sample_pred == 0) and (guess == "Keine Transaktion")) or ((sample_pred == 1) and (guess == "Transaktion")):
-            st.write("Die App hat **dieselbe** Vorhersage wie Du getroffen")
+            st.write("Die App hat **dieselbe** Vorhersage wie Du getroffen.")
         elif ~((sample_pred == 0) and (guess == "Keine Transaktion")) or ~((sample_pred == 1) and (guess == "Transaktion")):
-            st.write("Die App hat eine **andere** Vorhersage als Du getroffen")
+            st.write("Die App hat eine **andere** Vorhersage als Du getroffen.")
         else: 
-            st.write("Bitte überprüfe deine Eingabe nocheinmal")
+            st.write("Bitte überprüfe deine Eingabe nocheinmal.")
 
 ### Display the table with the values for the guessing game        
-
-if row3_col2.checkbox("Klicke hier um die Werte für jede Person zu sehen"):
+row3_col2.write("\n")
+row3_col2.write("\n")
+if row3_col2.checkbox("Klicke hier um die Werte für jede Person zu sehen."):
 
     row3_col2.write("Diese Tabelle zeigt für jede Person die drei wichtigsten Werte für die Vorhersage der \
-                    Zielvariable *Revenue*, also ob eine Transaktion stattfindet oder nicht")
+                    Zielvariable *Revenue*, also ob eine Transaktion stattfindet oder nicht.")
     table_samples = test_samples.copy()
     table_samples.rename(columns={"PageValues": "Page-Value in US-Dollar", "Month":"Monat",
                                   "VisitorType_Returning_Visitor": "Wiederkehrender Kunde"}, inplace=True)
@@ -237,7 +249,7 @@ add_space(5)
 # predict revenue for uploaded data
 st.header("Upload eigener Daten")
 
-uploaded_data = st.file_uploader("Wähle eine csv-Datei mit Kundendaten aus, um vorherzusagen, ob eine Transaktion stattfindet oder nicht")
+uploaded_data = st.file_uploader("Wähle eine csv-Datei mit Kundendaten aus, um vorherzusagen, ob eine Transaktion stattfindet oder nicht.")
 
 # only make predictions if data is uploaded
 if uploaded_data is not None:
@@ -257,22 +269,22 @@ if uploaded_data is not None:
     
 add_space(5)
     
-st.write("Die Daten sind von folgender Quelle: Sakar, C.O., Polat, S.O., Katircioglu, M. et al. Real-time prediction of online shoppers’ \
+st.write("Quelle des Datensatzes: Sakar, C.O., Polat, S.O., Katircioglu, M. et al. Real-time prediction of online shoppers’ \
          purchasing intention using multilayer perceptron and LSTM recurrent neural networks. \
         Neural Comput & Applic 31, 6893–6908 (2019). https://doi.org/10.1007/s00521-018-3523-0")
     
 
 # Sidebar Navigation
 
-st.sidebar.markdown("# :earth_africa: App-Menü:<br/><br/><br/>", unsafe_allow_html=True)
+st.sidebar.markdown("# 🛍️ App-Menü:<br/><br/><br/>", unsafe_allow_html=True)
 
 st.sidebar.markdown(
     
-'## :arrow_up_small: &ensp;'
-'<b><a href="#online-shopper-revenue-predictor-app" style="color: red;text-decoration: none;">Start</a></b><br/><br/><br/>'
+'## 🧭 &ensp;'
+'<b><a href="#online-shopper-revenue-predictor-app" style="color: red;text-decoration: none;">Einführung</a></b><br/><br/>'
 
 ':books: &ensp;'
-'<b><a href="#modell-informationen" style="color: black;text-decoration: none;">Modell-Informationen</a></b><br/><br/>'
+'<b><a href="#daten-explorer" style="color: black;text-decoration: none;">Daten Explorer</a></b><br/><br/>'
 
 ':trophy: &ensp;'
 '<b><a href="#guessing-game" style="color: black;text-decoration: none;">Guessing Game</a></b><br/><br/>'
@@ -281,6 +293,8 @@ st.sidebar.markdown(
 '<b><a href="#upload-eigener-daten" style="color: black;text-decoration: none;">Upload eigener Daten</a></b><br/><br/>'
 
 , unsafe_allow_html=True)
+
+st.sidebar.caption("erstellt von: di Luzio, Rumplmayr, Steiner, Zanoni")
 
 
 
