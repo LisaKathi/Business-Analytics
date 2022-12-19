@@ -235,23 +235,25 @@ if row3_col2.checkbox("Klicke hier um die Werte für jede Person zu sehen"):
 add_space(5)
 
 # predict revenue for uploaded data
-st.header("Vorhersage ob eine Transaktion zustande kommt oder nicht")
+st.header("Upload eigener Datein")
 
-uploaded_data = st.file_uploader("Wähle eine csv-Datei mit Kundendaten aus, um eine Vorhersage zu treffen")
+uploaded_data = st.file_uploader("Wähle eine csv-Datei mit Kundendaten aus, um vorherzusagen, ob eine Transaktion stattfindet oder nicht")
 
 # only make predictions if data is uploaded
 if uploaded_data is not None:
     new_customers = pd.read_csv(uploaded_data)
     new_customers = pd.get_dummies(new_customers, drop_first=True)
-
-if st.checkbox("Klicke hier, wenn Du die vorhergesagten Daten sehen willst"):
-    st.write(new_customers)
-    
     new_customers["predictions"] = model.predict(new_customers)
-    
     st.download_button(label="Download vorhergesagte Kunden-Daten",
                        data=new_customers.to_csv().encode("utf-8"),
                        file_name="scored_new_customers.csv")
+
+# display dataset with predictions
+    if st.checkbox("Klicke hier, wenn Du die vorhergesagten Daten sehen willst"):
+        st.write(new_customers)
+       
+    
+    
     
 add_space(5)
     
@@ -276,7 +278,7 @@ st.sidebar.markdown(
 '<b><a href="#guessing-game" style="color: black;text-decoration: none;">Guessing Game</a></b><br/><br/>'
 
 ':cloud: &ensp;'
-'<b><a href="#predicting-if-customer-purchases-something-or-not" style="color: black;text-decoration: none;">Upload eigener Daten</a></b><br/><br/>'
+'<b><a href="#upload-eigener-datein" style="color: black;text-decoration: none;">Upload eigener Daten</a></b><br/><br/>'
 
 , unsafe_allow_html=True)
 
