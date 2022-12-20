@@ -1,0 +1,8 @@
+[client]
+showErrorDetails = false
+
+[runner]
+fastReruns = true
+
+[theme]
+base = "light"

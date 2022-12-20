@@ -1,4 +1,6 @@
 seaborn
 matplotlib
 pandas==1.4.2
-sklearn
+scikit-learn
+openpyxl
+xgboost==1.6.2
